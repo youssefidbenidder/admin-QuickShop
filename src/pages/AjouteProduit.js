@@ -1,10 +1,12 @@
 import React from "react"
-import {storage} from "../firebase/Firebase";
 import uuid from 'uuid';
-import * as firebase from "firebase";
+import {Produit} from "../model/Produit";
+import {ProduitService} from "../services/ProduitService";
 
 export default class AjouteProduit extends React.Component {
 
+    produit ;
+    produitService;
     constructor(props) {
         super(props);
         this.state = {
@@ -17,12 +19,15 @@ export default class AjouteProduit extends React.Component {
             categorie: '',
             description: '',
             image: '',
-            imageUrl: ''
+            imageUrl: '',
+            rating:'',
         };
         this.onChange = this.onChange.bind(this);
         this.onChangeImage = this.onChangeImage.bind(this);
         this.ajouterProduit = this.ajouterProduit.bind(this);
-        this.loadCategories = this.loadCategories.bind(this)
+        this.retour = this.retour.bind(this)
+        //this.loadCategories = this.loadCategories.bind(this);
+
     }
 
     onChange(event) {
@@ -35,14 +40,19 @@ export default class AjouteProduit extends React.Component {
     }
 
     componentWillMount() {
-        this.loadCategories();
+        this.produitService = new ProduitService();
+        this.produitService.loadCategories(this);
+        //this.setState({categories : this.produitService.loadCategories()})
     }
 
-    loadCategories() {
-        firebase.database().ref('/categories').on('value', (snapshot) => {
+    /*loadCategories() {
+        /!*firebase.database().ref('/categories').on('value', (snapshot) => {
             this.setState({categories: snapshot.val()});
-        })
-    }
+        })*!/
+
+        this.setState({categories: this.produitService.loadCategories()});
+
+    }*/
 
     createSelect = () => {
         let select = [];
@@ -55,11 +65,15 @@ export default class AjouteProduit extends React.Component {
         return select
     };
 
+
     ajouterProduit(event) {
 
         event.preventDefault();
-        let uuidProduit = uuid.v4();
-        const {image} = this.state;
+        this.produit = new Produit(this.state);
+        this.produitService.ajouterProduit(this.produit);
+
+
+        /*
         const task = storage.ref().child(`images/${image.name}`).put(image);
         task.on('state_changed',
             (snapshot) => {
@@ -86,7 +100,11 @@ export default class AjouteProduit extends React.Component {
                     }
                 )
             }
-        );
+        );*/
+    }
+
+    retour(){
+        this.props.history.push("/produits");
     }
 
     render() {
@@ -143,13 +161,18 @@ export default class AjouteProduit extends React.Component {
                                           value={this.state.description}/>
                             </div>
                         </div>
+                        <div className="form-group col-md-4">
+                            <label htmlFor="inputRating">Rating</label>
+                            <input type="number" className="form-control" id="inputRating"
+                                   onChange={this.onChange} name="rating" step="0.1"/>
+                        </div>
                         <div className="form-group">
                             <label htmlFor="imageControlle">Ajouter Image</label>
                             <input type="file" className="form-control-file"
                                    onChange={this.onChangeImage} />
                         </div>
                         <button className="btn btn-success" onClick={this.ajouterProduit}>Valider</button>
-                        <button type="submit" className="btn btn-danger">Annuler</button>
+                        <button type="submit" className="btn btn-danger" onClick={this.retour}>Annuler</button>
                     </form>
                 </fieldset>
             </div>

@@ -4,9 +4,12 @@
 }
 
 #sidebar {
-    min-width: 250px;
-    max-width: 250px;
+    min-width: 200px;
+    max-width: 200px;
     min-height: 100vh;
+    background: #7386D5;
+    color: #fff;
+    transition: all 0.3s;
 }
 
 #sidebar.active {
@@ -47,12 +50,6 @@ a, a:hover, a:focus {
     transition: all 0.3s;
 }
 
-#sidebar {
-
-    background: #7386D5;
-    color: #fff;
-    transition: all 0.3s;
-}
 
 #sidebar .sidebar-header {
     padding: 20px;

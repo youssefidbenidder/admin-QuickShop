@@ -1,27 +1,28 @@
 import React, {Component} from 'react';
 import {Table} from "react-bootstrap";
 import * as firebase from "firebase";
+import {ClientService} from "../services/ClientService";
 
 export default class Clients extends Component {
 
-
+    clientService = new ClientService();
     constructor(props) {
         super(props);
         this.state = {
             users: {},
         };
-        this.loadClients = this.loadClients.bind(this);
+        //this.loadClients = this.loadClients.bind(this);
     }
 
     componentWillMount() {
-        this.loadClients();
+        this.clientService.loadClients(this);
     }
 
-    loadClients() {
+    /*loadClients() {
         firebase.database().ref('/users').on('value', (snapshot) => {
             this.setState({users: snapshot.val()});
         })
-    }
+    }*/
 
     createTable = () => {
         let table = [];

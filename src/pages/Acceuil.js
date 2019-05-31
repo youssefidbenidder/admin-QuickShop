@@ -14,8 +14,6 @@ class Acceuil extends React.Component {
     }
 
     render() {
-        console.log(this.props.admin);
-        console.log(this.props.children);
         return (
             <div>
                 <div className="wrapper">

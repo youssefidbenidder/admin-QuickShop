@@ -27,7 +27,7 @@ class Header extends React.Component {
                     <div className="collapse navbar-collapse justify-content-end" id="navigation">
                         <ul className="navbar-nav ml-auto">
                             <li className="nav-item">
-                                    <span className="no-icon logoutbtn" onClick={this.logOutFunction}>Log out</span>
+                                    <span className="no-icon logoutbtn" style={logoutBtnStyle} onClick={this.logOutFunction}>Log out</span>
                                 </li>
                         </ul>
                     </div>
@@ -36,6 +36,11 @@ class Header extends React.Component {
         );
     }
 }
+
+const logoutBtnStyle = {
+    fontSize : 24,
+    color : 'black'
+};
 
 
 export default withRouter(connect(mapStateToProps,{logOutAdmin})(Header));

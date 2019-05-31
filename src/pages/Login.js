@@ -5,9 +5,14 @@ import {connect} from "react-redux";
 import mapStatetoProps from "../tests/testStateToProps";
 import {fetchAdmin} from "../tests/testAdminFetch";
 import {withRouter} from "react-router-dom";
+import {Admin} from "../model/Admin";
+import {AdminService} from "../services/AdminService";
 
 class Login extends React.Component {
 
+
+    admin;
+    adminServeice;
     constructor(props) {
         super(props);
         this.state = {
@@ -38,21 +43,24 @@ class Login extends React.Component {
     };
 
     authenticate = (event) => {
-        let that = this;
+        //let that = this;
         event.preventDefault();
-        Firebase.auth().signInWithEmailAndPassword(this.state.emailInput, this.state.passInput)
+        this.admin = new Admin(this.state.emailInput, this.state.passInput);
+        this.adminServeice = new AdminService();
+        this.adminServeice.authenticate(this.admin , this);
+       /* Firebase.auth().signInWithEmailAndPassword(this.state.emailInput, this.state.passInput)
             .then(async () =>
-                Firebase.auth().onAuthStateChanged(await function (user) {
-                    if (user) {
-                        if (user.isAdmin === false) {
+                Firebase.auth().onAuthStateChanged(await function (admin) {
+                    if (admin) {
+                        if (admin.isAdmin === false) {
                             alert("les informations incorrectes");
                         } else {
                             that.props.fetchAdmin();
                             that.props.history.push("/produits")
                         }
-                        // User is signed in.
+                        // Admin is signed in.
                     } else {
-                        // No user is signed in.
+                        // No admin is signed in.
                     }
                 }))
             .catch(function (error) {
@@ -61,7 +69,7 @@ class Login extends React.Component {
                 let errorMessage = error.message;
                 alert(errorMessage);
                 // ...
-            });
+            });*/
     };
 
     render() {

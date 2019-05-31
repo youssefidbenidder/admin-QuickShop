@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import {Table} from "react-bootstrap";
 import "../styles/produits.css"
-import * as firebase from "firebase";
 import {withRouter} from "react-router-dom";
+import {ProduitService} from "../services/ProduitService";
 
 class Produits extends Component {
+
+    produitService = new ProduitService();
 
     constructor(props) {
         super(props);
@@ -14,14 +16,14 @@ class Produits extends Component {
             description: "",
             produitRechercher: "",
         };
-        this.loadProduits = this.loadProduits.bind(this);
-        this.deleteProduit = this.deleteProduit.bind(this);
+        // this.loadProduits = this.loadProduits.bind(this);
+        // this.deleteProduit = this.deleteProduit.bind(this);
         this.onChange = this.onChange.bind(this);
         this.rechercherProduit = this.rechercherProduit.bind(this);
     }
 
     componentWillMount() {
-        this.loadProduits();
+        this.produitService.loadProduits(this);
     }
 
     onNavigateAjouteProduit() {
@@ -32,16 +34,16 @@ class Produits extends Component {
         this.props.history.push("ajouterCategorie")
     }
 
-    deleteProduit(reference) {
+    /*deleteProduit(reference) {
         firebase.database().ref('produits/' + reference).remove();
-    }
+    }*/
 
 
-    loadProduits() {
+    /*loadProduits() {
         firebase.database().ref('/produits').on('value', (snapshot) => {
             this.setState({produits: snapshot.val()});
         })
-    }
+    }*/
 
     rechercherProduit() {
         var BreakException = {};
@@ -76,7 +78,7 @@ class Produits extends Component {
                 children.push(<td key={produits[key].prix}>{produits[key].prix} Mad</td>);
                 children.push(<td key={produits[key].qteStock}>{produits[key].qteStock}</td>);
                 children.push(<td key={produits[key].reference}>
-                    <div className={"btn btn-secondary mb-0 mt-0"}
+                    <div className={"btn btn-secondary mb-0 mt-0"} style={{width: "100px"}}
                          onClick={() => this.props.history.push({
                              pathname: `detailProduit/${produits[key].reference}`,
                              state: produits[key]
@@ -85,9 +87,12 @@ class Produits extends Component {
                     </div>
                 </td>);
                 children.push(<td key={produits[key].reference}>
-                    <div className={"btn btn-secondary mb-0 mt-0"}
-                         onClick={() => this.deleteProduit(produits[key].reference)}>
-                        Supprimer
+                    <div className={"btn btn-danger mb-0 mt-0"} style={{width: "40px"}}
+                         onClick={(e) => {
+                             if (window.confirm('Est ce que vous etes sur que vous veuillez sumprimer ce produit ?'))
+                                 this.produitService.deleteProduit(produits[key].reference)
+                         }}>
+                        X
                     </div>
                 </td>);
                 //Create the parent and add the children

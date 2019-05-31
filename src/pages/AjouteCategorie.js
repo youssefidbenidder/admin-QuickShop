@@ -2,8 +2,12 @@ import React from "react"
 import {storage} from "../firebase/Firebase";
 import uuid from 'uuid';
 import * as firebase from "firebase";
+import {Categorie} from "../model/Categorie";
+import {CategorieService} from "../services/CategorieService";
 
 export default class AjouteCategorie extends React.Component {
+    categorie;
+    categorieService;
 
     constructor(props) {
         super(props);
@@ -15,6 +19,7 @@ export default class AjouteCategorie extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.onChangeImage = this.onChangeImage.bind(this);
         this.ajouterCategorie= this.ajouterCategorie.bind(this);
+        this.retour = this.retour.bind(this)
     }
 
     onChange(event) {
@@ -30,7 +35,10 @@ export default class AjouteCategorie extends React.Component {
 
         event.preventDefault();
         let uuidCategorie = uuid.v4();
-        const {image} = this.state;
+        this.categorie = new Categorie(this.state);
+        this.categorieService = new CategorieService();
+        this.categorieService.ajouterCategorie(this.categorie);
+        /*const {image} = this.state;
         const task = storage.ref().child(`images/${image.name}`).put(image);
         task.on('state_changed',
             (snapshot) => {},
@@ -48,7 +56,12 @@ export default class AjouteCategorie extends React.Component {
                     }
                 )
             }
-        );
+        );*/
+    }
+
+
+    retour(){
+        this.props.history.push("/produits");
     }
 
     render() {
@@ -71,7 +84,7 @@ export default class AjouteCategorie extends React.Component {
                                    onChange={this.onChangeImage} />
                         </div>
                         <button className="btn btn-success" onClick={this.ajouterCategorie}>Valider</button>
-                        <button type="submit" className="btn btn-danger">Annuler</button>
+                        <button type="submit" className="btn btn-danger" onClick={this.retour}>Annuler</button>
                     </form>
                 </fieldset>
             </div>

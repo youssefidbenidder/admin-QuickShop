@@ -3,17 +3,21 @@ import "../styles/produitDetail.css"
 import * as firebase from "firebase";
 import {storage} from "../firebase/Firebase";
 import {withRouter} from "react-router-dom";
+import {Produit} from "../model/Produit";
+import {ProduitService} from "../services/ProduitService";
 
 class ProduitDetail extends React.Component {
 
-
+    produit;
+    produitService = new ProduitService();
     constructor(props) {
         super(props);
         this.state = this.props.location.state;
         this.onChange = this.onChange.bind(this);
         this.onChangeImage = this.onChangeImage.bind(this);
         this.updateProduit = this.updateProduit.bind(this);
-        this.deleteProduit = this.deleteProduit.bind(this);
+        this.retour = this.retour.bind(this);
+        //this.deleteProduit = this.deleteProduit.bind(this);
     }
 
     onChange(event) {
@@ -31,6 +35,9 @@ class ProduitDetail extends React.Component {
     updateProduit(event) {
         event.preventDefault();
         const {image} = this.state;
+        this.produit = new Produit(this.state);
+        this.produitService.updateProduit(this.produit);
+        /*const {image} = this.state;
         if (image !== undefined) {
             const task = storage.ref().child(`images/${image.name}`).put(image);
             task.on('state_changed',
@@ -57,14 +64,13 @@ class ProduitDetail extends React.Component {
             categorie: this.state.categorie,
             description: this.state.description,
         });
-        alert("le produit a été bien modifié");
+        alert("le produit a été bien modifié");*/
     }
 
-
-    deleteProduit(){
-        this.context.history.push("produits");
-        firebase.database().ref('produits/' + this.state.reference).remove();
+    retour(){
+        this.props.history.push("/produits");
     }
+
 
     render() {
         return (
@@ -78,16 +84,6 @@ class ProduitDetail extends React.Component {
                             <h6>Changer la photo</h6>
                             <input name={"imageUrl"} onChange={this.onChangeImage} type="file"
                                    className="form-control"/>
-                        </div>
-                        <div className="rating text-center mt-5">
-                            <div className="stars">
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star"></span>
-                                <span className="fa fa-star"></span>
-                            </div>
-                            <span className="review-no">41 reviews</span>
                         </div>
 
                     </div>
@@ -152,10 +148,8 @@ class ProduitDetail extends React.Component {
                                               id="textAreaDescription" rows="5"/>
                                 </div>
                             </div>
-                            <button type="submit" className="btn btn-success" onClick={this.updateProduit}>Valider
-                            </button>
-                            <button type="submit" className="btn btn-warning" onClick={this.deleteProduit}>Supprimer</button>
-                            <button type="submit" className="btn btn-danger">Annuler</button>
+                            <button type="submit" className="btn btn-success" onClick={this.updateProduit}>Valider</button>
+                            <button type="submit" className="btn btn-danger" onClick={this.retour}>Annuler</button>
                         </form>
                     </div>
                 </div>
